@@ -1,0 +1,34 @@
+From 7164e848a0c42c49621642c3c4ab1d1bfa750cfe Mon Sep 17 00:00:00 2001
+From: Rahul Butani <>
+Date: Mon, 12 Aug 2019 10:40:28 -0500
+Subject: [PATCH] keras: ReLU6 and DepthwiseConv2D
+
+---
+ tensorflow_core/python/keras/saving/save.py | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
+
+diff --git a/tensorflow_core/python/keras/saving/save.py b/tensorflow_core/python/keras/saving/save.py
+index 7391f98..af29547 100644
+--- a/tensorflow_core/python/keras/saving/save.py
++++ b/tensorflow_core/python/keras/saving/save.py
+@@ -133,9 +133,14 @@ def load_model(filepath, custom_objects=None, compile=True):  # pylint: disable=
+       ImportError: if loading from an hdf5 file and h5py is not available.
+       IOError: In case of an invalid savefile.
+   """
+-  if (h5py is not None and (
+-      isinstance(filepath, h5py.File) or h5py.is_hdf5(filepath))):
+-    return hdf5_format.load_model_from_hdf5(filepath, custom_objects, compile)
++  from tensorflow.python.keras.utils.generic_utils import CustomObjectScope
++  from tensorflow.keras.layers import DepthwiseConv2D
++  from tensorflow.keras.layers import ReLU
++
++  with CustomObjectScope({'ReLU': ReLU(6.),'DepthwiseConv2D': DepthwiseConv2D}):
++    if (h5py is not None and (
++        isinstance(filepath, h5py.File) or h5py.is_hdf5(filepath))):
++      return hdf5_format.load_model_from_hdf5(filepath, custom_objects, compile)
+ 
+   if isinstance(filepath, six.string_types):
+     loader_impl.parse_saved_model(filepath)
+-- 
+2.7.4
+

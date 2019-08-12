@@ -1,0 +1,36 @@
+From 4d68642f82fff52244aef2458d0fe94f4ca436d3 Mon Sep 17 00:00:00 2001
+From: Rahul Butani <>
+Date: Mon, 12 Aug 2019 10:46:11 -0500
+Subject: [PATCH] keras: ReLU6 and DepthwiseConv2D
+
+---
+ tensorflowjs/converters/keras_tfjs_loader.py | 13 +++++++++----
+ 1 file changed, 9 insertions(+), 4 deletions(-)
+
+diff --git a/tensorflowjs/converters/keras_tfjs_loader.py b/tensorflowjs/converters/keras_tfjs_loader.py
+index 2478e51..ee46d7c 100644
+--- a/tensorflowjs/converters/keras_tfjs_loader.py
++++ b/tensorflowjs/converters/keras_tfjs_loader.py
+@@ -59,10 +59,15 @@ def _deserialize_keras_model(model_topology_json,
+     model_topology_json = model_topology_json['model_config']
+   unique_name_scope = uuid.uuid4().hex if use_unique_name_scope else None
+   with tf.compat.v1.name_scope(unique_name_scope):
+-    if is_tf_keras:
+-      model = keras.models.model_from_json(json.dumps(model_topology_json))
+-    else:
+-      model = keras.models.model_from_json(json.dumps(model_topology_json))
++    from tensorflow.python.keras.utils.generic_utils import CustomObjectScope
++    from tensorflow.keras.layers import DepthwiseConv2D
++    from tensorflow.keras.layers import ReLU
++
++    with CustomObjectScope({'relu6': ReLU(6.),'DepthwiseConv2D': DepthwiseConv2D}):
++      if is_tf_keras:
++        model = keras.models.model_from_json(json.dumps(model_topology_json))
++      else:
++        model = keras.models.model_from_json(json.dumps(model_topology_json))
+ 
+   if weight_entries:
+     weights_dict = dict()
+-- 
+2.7.4
+

@@ -1,0 +1,11 @@
+group_name = "Simple Object Detection"
+license = "Apache-2.0"
+readme = "file:README.md"
+
+[[models]]
+name = "simple-object-detection"
+file = "simple-object-detection.tflite"
+type = "float"
+data_type = "f32"
+source_url = "https://storage.googleapis.com/tfjs-examples/simple-object-detection/dist/object_detection_model/model.json"
+version = "0.1.0"
