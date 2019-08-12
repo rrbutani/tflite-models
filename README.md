@@ -17,7 +17,7 @@ file = "mobilenet_v1_1.0_224_quant.tflite"
 
 # These are optional:
 type = "quant" # "quant" or "float"
-data_type = "uint8"
+data_type = "u8"
 source_url = "https://storage.googleapis.com/download.tensorflow.org/models/mobilenet_v1_2018_08_02/mobilenet_v1_1.0_224_quant.tgz"
 version = "0.1.0" # semver compatible version
 
@@ -36,8 +36,11 @@ version = "0.1.0"
 resolution = 192
 scaling = 1.0
 
-# Finally, each `models.toml` file can have a top level README field with
-# information on how the models were created/sourced:
+# Finally, each `models.toml` file can have a top level readme field with
+# information on how the models were created/sourced. This can either
+# contain a markdown compatible string (as below) or can contain a file path
+# (relative to the directory) prefaced by `file:` where the file being
+# pointed to is a markdown file. (i.e. readme = `file:README.md`)
 readme = """
 These models come straight from [TensorFlow's hosted models](https://www.tensorflow.org/lite/guide/hosted_models).
 
