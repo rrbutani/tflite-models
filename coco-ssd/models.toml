@@ -1,0 +1,68 @@
+group_name = "MobileNet SSD"
+license = "Apache-2.0"
+readme = "file:README.md"
+
+
+[[models]]
+name = "ssd_mobilenet_v1_quantized_coco"
+file = "ssd_mobilenet_v1_quantized_coco.tflite"
+
+type = "quant"
+data_type = "u8"
+source_url = "http://download.tensorflow.org/models/object_detection/ssd_mobilenet_v1_quantized_300x300_coco14_sync_2018_07_18.tar.gz"
+version = "0.1.0"
+
+resolution = [300, 300]
+depth_multiplier = 1.0
+date = 2018-07-18
+
+
+[[models]]
+name = "ssd_mobilenet_v2_quantized_coco"
+file = "ssd_mobilenet_v2_quantized_coco.tflite"
+
+type = "quant"
+data_type = "u8"
+source_url = "http://download.tensorflow.org/models/object_detection/ssd_mobilenet_v2_quantized_300x300_coco_2019_01_03.tar.gz"
+version = "0.1.0"
+
+resolution = [300, 300]
+date = 2019-01-03
+
+
+[[models]]
+name = "ssdlite_mobilenet_v2_coco"
+file = "ssdlite_mobilenet_v2_coco.tflite"
+
+type = "quant"
+data_type = "u8"
+source_url = "http://download.tensorflow.org/models/object_detection/ssdlite_mobilenet_v2_coco_2018_05_09.tar.gz"
+version = "0.1.0"
+
+resolution = [300, 300]
+date = 2018-05-09
+
+
+[[models]]
+name = "ssd_resnet_50_fpn_coco"
+file = "ssd_resnet_50_fpn_coco.tflite"
+
+type = "quant"   # Unlike the other models in this folder, this model was not
+data_type = "u8" # quantized before conversion.
+source_url = "http://download.tensorflow.org/models/object_detection/ssd_resnet50_v1_fpn_shared_box_predictor_640x640_coco14_sync_2018_07_03.tar.gz"
+version = "0.1.0"
+
+resolution = [640, 640]
+date = 2018-07-03
+
+
+[[models]]
+name = "ssd_mobilenet_v1_quantized_coco_habana"
+file = "ssd_mobilenet_v1_quantized_coco_habana.tflite"
+
+type = "quant"
+data_type = "u8"
+source_url = "https://zenodo.org/record/3252084/files/mobilenet_v1_ssd_8bit_finetuned.tar.gz"
+version = "0.1.0"
+
+resolution = [300, 300]
