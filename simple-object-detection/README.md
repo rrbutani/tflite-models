@@ -22,3 +22,21 @@ Note: If your python installation is configured to generate .pyc files on instal
     + `tensorflowjs_converter --input_format tfjs_layers_model --output_format keras model.json simple-object-detection.h5`
   - And finally, to TFLite:
     + `tflite_convert --keras_model_file simple-object-detection.h5 --output_file simple-object-detection.tflite`
+
+Here's a quick function that does the above:
+
+```bash
+# $1: URL; $2?: name
+function convert {
+  local MODEL_URL="${1}"
+  local BASE_URL=$(dirname "${MODEL_URL}")
+  local MODEL_NAME="${2-"model"}"
+
+  curl -H 'Accept: application/json' --compressed "${MODEL_URL}" > "${MODEL_NAME}.json"
+  jq -r '.weightsManifest | .[] | .paths | .[]' "${MODEL_NAME}.json" | { while read w; do curl --compressed "${BASE_URL}/${w}" > "${w}"; done; }
+
+  tensorflowjs_converter --input_format tfjs_layers_model --output_format keras "${MODEL_NAME}.json" "${MODEL_NAME}.h5"
+  tflite_convert --keras_model_file "${MODEL_NAME}.h5" --output_file "${MODEL_NAME}.tflite"
+}
+
+```
