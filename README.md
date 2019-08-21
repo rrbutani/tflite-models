@@ -22,7 +22,7 @@ source_url = "https://storage.googleapis.com/download.tensorflow.org/models/mobi
 version = "0.1.0" # semver compatible version
 
 # Models can also have additional fields:
-resolution = 224
+resolution = [224, 224]
 scaling = 1.0
 
 # As an example, here's another one:
@@ -33,7 +33,7 @@ type = "quant"
 data_type = "uint8"
 source_url = "https://storage.googleapis.com/download.tensorflow.org/models/mobilenet_v1_2018_08_02/mobilenet_v1_1.0_192_quant.tgz"
 version = "0.1.0"
-resolution = 192
+resolution = [192, 192]
 scaling = 1.0
 
 # Finally, each `models.toml` file can have a top level readme field with

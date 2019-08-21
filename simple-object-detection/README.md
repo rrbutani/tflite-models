@@ -4,7 +4,7 @@ A TFLite model for [this demo](https://github.com/tensorflow/tfjs-examples/tree/
 
 In the original demo, the model is either generated server side by a [NodeJS script](https://github.com/tensorflow/tfjs-examples/blob/fb430042376431fba804a2495891100f6e2205d6/simple-object-detection/train.js) that [modifies a MobileNet TensorFlow.js Layers model](https://github.com/tensorflow/tfjs-examples/blob/fb430042376431fba804a2495891100f6e2205d6/simple-object-detection/train.js#L66-L101) or [loaded from Google](https://github.com/tensorflow/tfjs-examples/blob/fb430042376431fba804a2495891100f6e2205d6/simple-object-detection/index.js#L146-L147) (TensorFlow.js Layers model as well).
 
-The TFLite model in this folder was created by first converting the TFJS Layer model to a Keras HDF5 model using [the tfjs-converter](https://github.com/tensorflow/tfjs-converter/tree/master/python/tensorflowjs/converters) ([the Python package](https://pypi.org/project/tensorflowjs/1.2.6/)) and then by converting the resulting HDF5 model to a TFLite model using the [TensorFlow Lite converter](https://www.tensorflow.org/lite/convert/).
+The TFLite model in this folder was created by first converting the TFJS Layer model to a Keras HDF5 model using [the tfjs-converter](https://github.com/tensorflow/tfjs-converter/tree/master/python/tensorflowjs/converters) ([the Python package](https://pypi.org/project/tensorflowjs/1.0.1/) - for silly reasons v1.0.1 of tensorflowjs was used; if you're going to apply the patch use the same version) and then by converting the resulting HDF5 model to a TFLite model using the [TensorFlow Lite converter](https://www.tensorflow.org/lite/convert/).
 
 Because the base mobilenet model [uses functions that aren't in scope by default](https://github.com/keras-team/keras/issues/7431), both the converters have to be patched in order for the conversion to occur successfully. The two patches in this folder take care of this; they're designed to be applied after the `tensorflowjs` and `tensorflow` python packages are installed. To apply them, run `patch -p1 < <path/to/patchfile>` while in the `site-packages` folder of the python installation that was used to install the packages (use a virtualenv!). The patches can be applied in any order.
 
@@ -12,12 +12,12 @@ Note: If your python installation is configured to generate .pyc files on instal
 
 ### To actually perform the conversion:
   - First download the `model.json` file for the model from the [given URL](https://github.com/tensorflow/tfjs-examples/blob/fb430042376431fba804a2495891100f6e2205d6/simple-object-detection/index.js#L146-L147).
-    + Warning: set your `Accept` header or you might get back junk. Or use a browser.
+    + Warning: set your `Accept` header and specify `--compressed` or you might get back junk. Or use a browser.
     + `export MODEL_URL="https://storage.googleapis.com/tfjs-examples/simple-object-detection/dist/object_detection_model/model.json"`
-    + `curl -H 'Accept: application/json' "${MODEL_URL}" > model.json`
+    + `curl -H 'Accept: application/json' --compressed "${MODEL_URL}" > model.json`
   - Next, grab all the sharded weight files for the model:
     + `export BASE_URL=$(dirname "${MODEL_URL}")`
-    + `jq -r '.weightsManifest | .[] | .paths | .[]' model.json | { while read w; do wget "${BASE_URL}/${w}"; done; }`
+    + `jq -r '.weightsManifest | .[] | .paths | .[]' model.json | { while read w; do curl --compressed "${BASE_URL}/${w}" > "${w}"; done; }`
   - Now, convert to Keras HDF5:
     + `tensorflowjs_converter --input_format tfjs_layers_model --output_format keras model.json simple-object-detection.h5`
   - And finally, to TFLite:
